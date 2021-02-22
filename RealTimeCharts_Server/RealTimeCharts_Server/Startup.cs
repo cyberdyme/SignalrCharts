@@ -1,21 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
-using Autofac.Core;
 using AutofacSerilogIntegration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RealTimeCharts_Server.Controllers;
 using RealTimeCharts_Server.HubConfig;
+using Serilog;
 
 namespace RealTimeCharts_Server
 {
@@ -56,8 +49,8 @@ namespace RealTimeCharts_Server
         public void ConfigureContainer(ContainerBuilder builder)
         {
             // do all the autofac registration here
-            // IOC.ServiceRegistration.Register(builder);
-            // IOC.ServiceRegistration.RegisterBackgroundServices(builder);
+            IOC.ServiceRegistration.Register(builder);
+            IOC.ServiceRegistration.RegisterBackgroundServices(builder);
             builder.RegisterLogger();
             this.ApplicationBuilder = builder;
         }
@@ -71,6 +64,9 @@ namespace RealTimeCharts_Server
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // This will make the HTTP requests log as rich logs instead of plain text.
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 

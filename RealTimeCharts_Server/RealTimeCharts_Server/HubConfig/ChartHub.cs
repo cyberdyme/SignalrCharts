@@ -5,8 +5,13 @@ using System.Threading.Tasks;
 
 namespace RealTimeCharts_Server.HubConfig
 {
-    public class ChartHub : Hub
+    public class ChartHub : Hub<IChartHub>
     {
-        public async Task BroadcastChartData(List<ChartModel> data) => await Clients.All.SendAsync("broadcastchartdata", data);
+        public async Task BroadcastChartData(List<ChartModel> data) => await Clients.All.BroadcastChartData(data);
+    }
+
+    public interface IChartHub
+    {
+        Task BroadcastChartData(List<ChartModel> data);
     }
 }
