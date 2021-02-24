@@ -1,6 +1,6 @@
-<div style="display: block" *ngIf='signalRService.data'>
+<div style="display: block" *ngIf='signalRService.bradcastedData'>
   <canvas baseChart
-          [datasets]="signalRService.data"
+          [datasets]="signalRService.bradcastedData"
           [labels]="chartLabels"
           [options]="chartOptions"
           [legend]="chartLegend"
@@ -9,6 +9,10 @@
           (chartClick)="chartClicked($event)"></canvas>
 </div>
 <br><br>
+<div>
+  <button (click)="startBroadcastChartData()">Start</button>
+  <button (click)="endBroadcastChartData()">Stop</button>
+</div>
 <ul>
   <li *ngFor='let data of signalRService.bradcastedData'>
     <ng-container *ngIf="data">

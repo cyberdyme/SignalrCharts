@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using RealTimeCharts_Server.DataStorage;
 using RealTimeCharts_Server.HubConfig;
 using RealTimeCharts_Server.Services;
-using RealTimeCharts_Server.TimerFeatures;
 
 namespace RealTimeCharts_Server.Controllers
 {
@@ -36,7 +34,7 @@ namespace RealTimeCharts_Server.Controllers
         {
             _logger.LogInformation($"SetSender = {sendMessages}");
 
-            this._options.SendMessages = true;
+            this._options.SendMessages = sendMessages;
             return Ok(new { Message = $"Send messages = {sendMessages}" });
         }
 

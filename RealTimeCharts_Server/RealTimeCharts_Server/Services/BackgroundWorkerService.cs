@@ -44,13 +44,13 @@ namespace RealTimeCharts_Server.Services
             while (!stoppingToken.IsCancellationRequested)
             {
 
-                _logger.LogInformation("Processing service worker ....");
                 if (_options.SendMessages)
                 {
+                    _logger.LogInformation("DataManager.GetData getting data ...");
                     await _hubContext.Clients.All.BroadcastChartData(DataManager.GetData());
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken);
             }
 
             return 1;

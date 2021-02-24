@@ -6,14 +6,14 @@ import { ChartModel } from '../_interfaces/chartmodel.model';
   providedIn: 'root',
 })
 export class SignalRService {
-  public data: ChartModel[] = [];
+  //public data: ChartModel[] = [];
   public bradcastedData: ChartModel[] = [];
 
   private hubConnection: signalR.HubConnection | null = null;
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:5001/chart')
+      .withUrl('https://localhost:9002/chart')
       .build();
 
     this.hubConnection
@@ -22,20 +22,27 @@ export class SignalRService {
       .catch((err) => console.log('Error while starting connection: ' + err));
   };
 
-  public addTransferChartDataListener = () => {
-    this.hubConnection?.on('transferchartdata', (data) => {
-      this.data = data;
-      console.log(data);
-    });
-  };
-
+  /*
   public broadcastChartData = () => {
-    this.hubConnection?.invoke('broadcastchartdata', this.data)
+    this.hubConnection?.invoke('resetbroadcastchartdata', this.data)
+      .catch((err) => console.error(err));
+  };
+  */
+
+  public startBroadcastChartData = () => {
+    this.hubConnection?.invoke('startbroadcastchartdata')
       .catch((err) => console.error(err));
   };
 
+  public endBroadcastChartData = () => {
+    this.hubConnection?.invoke('endbroadcastchartdata')
+      .catch((err) => console.error(err));
+  };
+
+
   public addBroadcastChartDataListener = () => {
     this.hubConnection?.on('broadcastchartdata', (data) => {
+      console.log(data);
       this.bradcastedData = data;
     });
   };
