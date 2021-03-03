@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +42,6 @@ namespace RealTimeCharts_Server
 
 
             var hostBuilder = CreateHostBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .UseEnvironment(environment)
                 .ConfigureHostConfiguration(builder =>
                 {

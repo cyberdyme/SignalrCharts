@@ -1,5 +1,3 @@
-using Autofac;
-using AutofacSerilogIntegration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,8 +18,7 @@ namespace RealTimeCharts_Server
         }
 
         public IConfiguration Configuration { get; }
-        public ContainerBuilder ApplicationBuilder { get; private set; }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -46,16 +43,6 @@ namespace RealTimeCharts_Server
             mvcBuilder.AddApplicationPart(typeof(ChartController).Assembly).AddControllersAsServices();
         }
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            // do all the autofac registration here
-            IOC.ServiceRegistration.Register(builder);
-            IOC.ServiceRegistration.RegisterBackgroundServices(builder);
-            builder.RegisterLogger();
-            this.ApplicationBuilder = builder;
-        }
-
-        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
