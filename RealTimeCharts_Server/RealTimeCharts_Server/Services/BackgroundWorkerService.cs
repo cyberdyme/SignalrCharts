@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -33,10 +32,9 @@ namespace RealTimeCharts_Server.Services
 
         public void SetMessageStatus(bool sendMessageStatus)
         {
-            _mediator.Publish(new ServiceNotificationOptions { SendMessages = sendMessageStatus });
+            _mediator.Publish(new ServiceNotificationOptions {SendMessages = sendMessageStatus});
         }
     }
-
 
 
     public interface IBackgroundWorkerServiceOptions
@@ -45,14 +43,33 @@ namespace RealTimeCharts_Server.Services
     }
 
 
-    public class BackgroundWorkerServiceOptions: IBackgroundWorkerServiceOptions, INotificationHandler<ServiceNotificationOptions> {
-        private readonly ReaderWriterLockSlim _readerWriterLockSlim = new();
-        private bool _sendMessages;
+    public class MyNotificationHandler : INotificationHandler<ServiceNotificationOptions>
+    {
+        private readonly IBackgroundWorkerServiceOptions _options;
 
-        public BackgroundWorkerServiceOptions()
+        public MyNotificationHandler()
         {
             
         }
+
+
+        public MyNotificationHandler(IBackgroundWorkerServiceOptions options)
+        {
+            _options = options;
+        }
+
+        public Task Handle(ServiceNotificationOptions notification, CancellationToken cancellationToken)
+        {
+            _options.SendMessages = notification.SendMessages;
+            return Task.CompletedTask;
+        }
+    }
+
+
+    public class BackgroundWorkerServiceOptions : IBackgroundWorkerServiceOptions
+    {
+        private readonly ReaderWriterLockSlim _readerWriterLockSlim = new();
+        private bool _sendMessages;
 
 
         public bool SendMessages
@@ -72,7 +89,6 @@ namespace RealTimeCharts_Server.Services
 
             set
             {
-                
                 _readerWriterLockSlim.EnterWriteLock();
                 try
                 {
@@ -84,23 +100,17 @@ namespace RealTimeCharts_Server.Services
                 }
             }
         }
-
-
-        public Task Handle(ServiceNotificationOptions notification, CancellationToken cancellationToken)
-        {
-            this.SendMessages = notification.SendMessages;
-            return Task.CompletedTask;
-        }
     }
 
     public class BackgroundWorkerService : BackgroundService
     {
-        private readonly ILogger<BackgroundWorkerService> _logger;
         private readonly IHubContext<ChartHub, IChartHub> _hubContext;
+        private readonly ILogger<BackgroundWorkerService> _logger;
         private readonly IBackgroundWorkerServiceOptions _options;
 
 
-        public BackgroundWorkerService(ILogger<BackgroundWorkerService> logger, IHubContext<ChartHub, IChartHub> hubContext, IBackgroundWorkerServiceOptions options)
+        public BackgroundWorkerService(ILogger<BackgroundWorkerService> logger,
+            IHubContext<ChartHub, IChartHub> hubContext, IBackgroundWorkerServiceOptions options)
         {
             _logger = logger;
             _hubContext = hubContext;
@@ -110,7 +120,7 @@ namespace RealTimeCharts_Server.Services
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("***************** Starting the task ******************");
-            return this.RunTask(stoppingToken);
+            return RunTask(stoppingToken);
         }
 
         private async Task<int> RunTask(CancellationToken stoppingToken)
@@ -122,8 +132,8 @@ namespace RealTimeCharts_Server.Services
                 {
                     _logger.LogInformation(".");
                     await _hubContext.Clients.All.BroadcastChartData(DataManager.GetData());
-
                 }
+
                 await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken);
             }
 

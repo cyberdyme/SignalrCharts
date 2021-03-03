@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RealTimeCharts_Server.Controllers;
 using RealTimeCharts_Server.HubConfig;
-using RealTimeCharts_Server.Services;
 using Serilog;
 
 namespace RealTimeCharts_Server
@@ -37,7 +36,6 @@ namespace RealTimeCharts_Server
             });
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddSingleton<INotificationHandler<ServiceNotificationOptions>, BackgroundWorkerServiceOptions>();
 
 
             services.AddSignalR();
