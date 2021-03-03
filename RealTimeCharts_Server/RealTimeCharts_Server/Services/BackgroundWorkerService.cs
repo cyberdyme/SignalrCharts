@@ -45,28 +45,66 @@ namespace RealTimeCharts_Server.Services
     }
 
 
-    public class BackgroundWorkerServiceOptions: IBackgroundWorkerServiceOptions
-    {
-        public bool SendMessages { get; set; }
+    public class BackgroundWorkerServiceOptions: IBackgroundWorkerServiceOptions, INotificationHandler<ServiceNotificationOptions> {
+        private readonly ReaderWriterLockSlim _readerWriterLockSlim = new();
+        private bool _sendMessages;
+
+        public BackgroundWorkerServiceOptions()
+        {
+            
+        }
+
+
+        public bool SendMessages
+        {
+            get
+            {
+                _readerWriterLockSlim.EnterReadLock();
+                try
+                {
+                    return _sendMessages;
+                }
+                finally
+                {
+                    _readerWriterLockSlim.ExitReadLock();
+                }
+            }
+
+            set
+            {
+                
+                _readerWriterLockSlim.EnterWriteLock();
+                try
+                {
+                    _sendMessages = value;
+                }
+                finally
+                {
+                    _readerWriterLockSlim.ExitWriteLock();
+                }
+            }
+        }
+
+
+        public Task Handle(ServiceNotificationOptions notification, CancellationToken cancellationToken)
+        {
+            this.SendMessages = notification.SendMessages;
+            return Task.CompletedTask;
+        }
     }
 
-    public interface IBackgroundWorkerService : IHostedService
-    {
-    }
-
-
-    public class BackgroundWorkerService : BackgroundService, INotificationHandler<ServiceNotificationOptions>, IBackgroundWorkerService
+    public class BackgroundWorkerService : BackgroundService
     {
         private readonly ILogger<BackgroundWorkerService> _logger;
         private readonly IHubContext<ChartHub, IChartHub> _hubContext;
+        private readonly IBackgroundWorkerServiceOptions _options;
 
-        static readonly ReaderWriterLockSlim ReaderWriterLockSlim = new();
-        private static bool _sendMessages;
 
-        public BackgroundWorkerService(ILogger<BackgroundWorkerService> logger, IHubContext<ChartHub, IChartHub> hubContext)
+        public BackgroundWorkerService(ILogger<BackgroundWorkerService> logger, IHubContext<ChartHub, IChartHub> hubContext, IBackgroundWorkerServiceOptions options)
         {
             _logger = logger;
             _hubContext = hubContext;
+            _options = options;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -80,20 +118,7 @@ namespace RealTimeCharts_Server.Services
             _logger.LogInformation("DataManager.GetData getting data ...");
             while (!stoppingToken.IsCancellationRequested)
             {
-                // read value
-                bool sendMessagesStatus;
-                //ReaderWriterLockSlim.EnterReadLock();
-                try
-                {
-                    sendMessagesStatus = BackgroundWorkerService._sendMessages;
-                }
-                finally
-                {
-                    //ReaderWriterLockSlim.ExitReadLock();
-                }
-
-                
-                if (sendMessagesStatus)
+                if (_options.SendMessages)
                 {
                     _logger.LogInformation(".");
                     await _hubContext.Clients.All.BroadcastChartData(DataManager.GetData());
@@ -104,24 +129,6 @@ namespace RealTimeCharts_Server.Services
 
             _logger.LogInformation("***************** BackgroundWorkerService completed ******************");
             return 1;
-        }
-
-        public Task Handle(ServiceNotificationOptions notification, CancellationToken cancellationToken)
-        {
-            // write the value
-            //ReaderWriterLockSlim.EnterWriteLock();
-            try
-            {
-                BackgroundWorkerService._sendMessages = notification.SendMessages;
-            }
-            finally
-            {
-                //ReaderWriterLockSlim.ExitWriteLock();
-            }
-
-
-            _logger.LogCritical($"Debugging from Notifier 1. Message  : {notification.SendMessages} ");
-            return Task.CompletedTask;
         }
     }
 }

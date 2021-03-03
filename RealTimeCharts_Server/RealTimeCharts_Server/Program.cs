@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Extensions.DependencyInjection;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -109,8 +110,6 @@ namespace RealTimeCharts_Server
                 {
                     services.AddSingleton<IBackgroundWorkerServiceOptions, BackgroundWorkerServiceOptions>();
                     services.AddSingleton<IHostedService, BackgroundWorkerService>();
-
-
                     //services.AddHostedService<BackgroundWorkerService>();
                 });
     }

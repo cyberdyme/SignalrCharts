@@ -12,6 +12,7 @@ namespace RealTimeCharts_Server.IOC
 
         public static void RegisterBackgroundServices(ContainerBuilder builder)
         {
+            builder.RegisterType<BackgroundWorkerServiceOptions>().As<IBackgroundWorkerServiceOptions>().SingleInstance();
         }
     }
 }
