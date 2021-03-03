@@ -12,13 +12,13 @@ namespace RealTimeCharts_Server.Controllers
     {
         private readonly ILogger<ChartController> _logger;
         private IHubContext<ChartHub> _hub;
-        private readonly IBackgroundWorkerServiceOptions _options;
+        private readonly IServiceNotificationService _notificationService;
 
-        public ChartController(ILogger<ChartController> logger,   IHubContext<ChartHub> hub, IBackgroundWorkerServiceOptions options)
+        public ChartController(ILogger<ChartController> logger,   IHubContext<ChartHub> hub, IServiceNotificationService notificationService)
         {
             _logger = logger;
             _hub = hub;
-            _options = options;
+            _notificationService = notificationService;
         }
 
         public IActionResult Get()
@@ -33,8 +33,7 @@ namespace RealTimeCharts_Server.Controllers
         public IActionResult SetSender(bool sendMessages)
         {
             _logger.LogInformation($"SetSender = {sendMessages}");
-
-            this._options.SendMessages = sendMessages;
+            _notificationService.SetMessageStatus(sendMessages);
             return Ok(new { Message = $"Send messages = {sendMessages}" });
         }
 

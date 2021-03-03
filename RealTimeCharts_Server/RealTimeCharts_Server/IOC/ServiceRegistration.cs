@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Autofac;
+using RealTimeCharts_Server.Services;
 
 namespace RealTimeCharts_Server.IOC
 {
@@ -11,6 +7,7 @@ namespace RealTimeCharts_Server.IOC
     {
         public static void Register(ContainerBuilder builder)
         {
+            builder.RegisterType<ServiceNotificationService>().As<IServiceNotificationService>().InstancePerDependency();
         }
 
         public static void RegisterBackgroundServices(ContainerBuilder builder)

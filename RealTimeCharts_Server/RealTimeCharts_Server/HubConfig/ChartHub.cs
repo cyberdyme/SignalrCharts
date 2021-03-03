@@ -8,24 +8,24 @@ namespace RealTimeCharts_Server.HubConfig
 {
     public class ChartHub : Hub<IChartHub>
     {
-        private readonly IBackgroundWorkerServiceOptions _options;
+        private readonly IServiceNotificationService _notificationService;
 
-        public ChartHub(IBackgroundWorkerServiceOptions options)
+        public ChartHub(IServiceNotificationService notificationService)
         {
-            _options = options;
+            _notificationService = notificationService;
         }
 
         public async Task BroadcastChartData(List<ChartModel> data) => await Clients.All.BroadcastChartData(data);
 
         public Task StartBroadcastChartData()
         {
-            _options.SendMessages = true;
+            _notificationService.SetMessageStatus(true);
             return Task.FromResult(true);
         }
 
         public Task EndBroadcastChartData()
         {
-            _options.SendMessages = false;
+            _notificationService.SetMessageStatus(false);
             return Task.FromResult(true);
         }
     }

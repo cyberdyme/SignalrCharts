@@ -1,5 +1,7 @@
+using System.Reflection;
 using Autofac;
 using AutofacSerilogIntegration;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +34,8 @@ namespace RealTimeCharts_Server
                 .AllowAnyHeader()
                 .AllowCredentials()); 
             });
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddSignalR();
 

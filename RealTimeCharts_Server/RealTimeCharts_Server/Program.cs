@@ -108,7 +108,10 @@ namespace RealTimeCharts_Server
                 }).ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<IBackgroundWorkerServiceOptions, BackgroundWorkerServiceOptions>();
-                    services.AddHostedService<BackgroundWorkerService>();
+                    services.AddSingleton<IHostedService, BackgroundWorkerService>();
+
+
+                    //services.AddHostedService<BackgroundWorkerService>();
                 });
     }
 }
