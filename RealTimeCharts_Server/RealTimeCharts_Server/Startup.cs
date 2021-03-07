@@ -4,12 +4,14 @@ using AutofacSerilogIntegration;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RealTimeCharts_Server.Controllers;
 using RealTimeCharts_Server.HubConfig;
+using RealTimeCharts_Server.Models;
 using Serilog;
 
 namespace RealTimeCharts_Server
@@ -27,6 +29,8 @@ namespace RealTimeCharts_Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EmployeeContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:EmployeeDB"]));
+
             services.AddCors(options => 
             { 
                 options.AddPolicy("CorsPolicy", builder => builder.WithOrigins("http://localhost:4200")
@@ -36,10 +40,7 @@ namespace RealTimeCharts_Server
             });
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
-
-
             services.AddSignalR();
-
             services.AddControllers();
 
             services.AddSwaggerGen(options =>
