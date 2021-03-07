@@ -3,6 +3,7 @@ using RealTimeCharts_Server.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RealTimeCharts_Server.Services;
+using RealTimeCharts_Server.Services.BackgroundWorker;
 
 namespace RealTimeCharts_Server.HubConfig
 {

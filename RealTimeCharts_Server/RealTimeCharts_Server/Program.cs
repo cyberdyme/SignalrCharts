@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using RealTimeCharts_Server.Services;
+using RealTimeCharts_Server.Services.BackgroundWorker;
 using Serilog;
 
 namespace RealTimeCharts_Server

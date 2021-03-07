@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using RealTimeCharts_Server.HubConfig;
 using RealTimeCharts_Server.Services;
+using RealTimeCharts_Server.Services.BackgroundWorker;
 
 namespace RealTimeCharts_Server.Controllers
 {

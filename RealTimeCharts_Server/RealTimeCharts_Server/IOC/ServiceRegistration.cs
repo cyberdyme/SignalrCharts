@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using RealTimeCharts_Server.Services;
+using RealTimeCharts_Server.Services.BackgroundWorker;
 
 namespace RealTimeCharts_Server.IOC
 {
