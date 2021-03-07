@@ -1,5 +1,6 @@
 using System.Reflection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using AutofacSerilogIntegration;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,7 @@ namespace RealTimeCharts_Server
                 .AllowCredentials()); 
             });
 
+            services.AddAutofac();
             services.AddDbContext<EmployeeContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:EmployeeDB"]));
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddSignalR();

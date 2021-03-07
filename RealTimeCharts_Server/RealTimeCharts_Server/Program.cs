@@ -54,7 +54,6 @@ namespace RealTimeCharts_Server
                     builder.SetBasePath(Directory.GetCurrentDirectory());
                     builder.AddCommandLine(args);
                 })
-                .ConfigureServices(services => services.AddAutofac())
                 .ConfigureServices((context, collection) =>
                 {
                     Log.Logger = new LoggerConfiguration()
