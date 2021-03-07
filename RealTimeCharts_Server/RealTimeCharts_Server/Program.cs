@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Autofac.Extensions.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using RealTimeCharts_Server.Models;
 using RealTimeCharts_Server.Services;
 using RealTimeCharts_Server.Services.BackgroundWorker;
 using Serilog;
@@ -52,6 +54,7 @@ namespace RealTimeCharts_Server
                     builder.SetBasePath(Directory.GetCurrentDirectory());
                     builder.AddCommandLine(args);
                 })
+                .ConfigureServices(services => services.AddAutofac())
                 .ConfigureServices((context, collection) =>
                 {
                     Log.Logger = new LoggerConfiguration()
