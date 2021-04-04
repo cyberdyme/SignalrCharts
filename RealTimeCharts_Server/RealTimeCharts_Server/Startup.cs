@@ -44,10 +44,7 @@ namespace RealTimeCharts_Server
             services.AddSignalR();
             services.AddControllers();
 
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1",new OpenApiInfo(){ Title = "App title", Version = "v1"});
-            });
+            services.AddSwaggerGen();
 
             var mvcBuilder = services.AddMvc(options => options.EnableEndpointRouting = false);
             mvcBuilder.AddApplicationPart(typeof(ChartController).Assembly).AddControllersAsServices();
@@ -82,6 +79,12 @@ namespace RealTimeCharts_Server
             app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "My Test1 Api v1");
+            });
 
             app.UseEndpoints(endpoints =>
             {

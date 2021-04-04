@@ -22,6 +22,7 @@ namespace RealTimeCharts_Server.Controllers
             _notificationService = notificationService;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Get()
         { 
 
